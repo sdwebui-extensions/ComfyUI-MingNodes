@@ -41,8 +41,11 @@ class LiteLama2(LiteLama):
             if os.path.exists(checkpoint_path) and os.path.isfile(checkpoint_path):
                 pass
             else:
-                download_file("https://huggingface.co/anyisalin/big-lama/resolve/main/big-lama.safetensors",
-                              checkpoint_path)
+                if os.path.exists("/stable-diffusion-cache/models/inpaint/big-lama.pt/big-lama.pt"):
+                    checkpoint_path = "/stable-diffusion-cache/models/inpaint/big-lama.pt/big-lama.pt"
+                else:
+                    download_file("https://huggingface.co/anyisalin/big-lama/resolve/main/big-lama.safetensors",
+                                checkpoint_path)
 
             self._checkpoint_path = checkpoint_path
 

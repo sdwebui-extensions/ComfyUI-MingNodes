@@ -4,7 +4,7 @@ from PIL import Image, ImageEnhance, ImageDraw, ImageFont
 import folder_paths
 import os
 
-
+folder_paths.add_model_folder_path('fonts', '/code/ComfyUI/custom_nodes/ComfyUI-MingNodes/fonts')
 def tensor2pil(t_image: torch.Tensor) -> Image:
     return Image.fromarray(np.clip(255.0 * t_image.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
 
@@ -27,9 +27,7 @@ def add_image_watermark(original, watermark, x, y, opacity, scale):
 
 def add_text_watermark(original, text, x, y, scale, opacity, color, fonts):
     txt = Image.new('RGBA', original.size, (255, 255, 255, 0))
-    font_path = os.path.join(folder_paths.get_output_directory(), 'ComfyUI-MingNodes', 'fonts')
-    font_path = font_path.replace("output", "custom_nodes")
-    font_path = os.path.join(font_path, fonts)
+    font_path = folder_paths.get_full_path("fonts", fonts)
     font_size = int(40 * scale)
     font = ImageFont.truetype(font_path, font_size)
     d = ImageDraw.Draw(txt)
@@ -49,9 +47,7 @@ def hex_to_rgb(hex_color):
 class AddWaterMarkNode:
     @classmethod
     def INPUT_TYPES(s):
-        font_path = os.path.join(folder_paths.get_output_directory(), 'ComfyUI-MingNodes', 'fonts')
-        font_path = font_path.replace("output", "custom_nodes")
-        files = [f for f in os.listdir(font_path) if os.path.isfile(os.path.join(font_path, f))]
+        files = folder_paths.get_filename_list("fonts")
 
         return {
             "required": {
